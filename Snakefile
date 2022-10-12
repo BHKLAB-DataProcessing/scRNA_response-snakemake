@@ -8,6 +8,16 @@ S3 = S3RemoteProvider(
 prefix = config["prefix"]
 filename = config["filename"]
 
+rule last_step:
+    input:
+        S3.remote(prefix + 'processed/scRNA_response.rds')
+    output:
+        S3.remote(prefix + 'scRNA_response.rds')
+    shell:
+        """
+        mv {prefix}processed/scRNA_response.rds {prefix}scRNA_response.rds
+        """
+
 rule get_full_exp_list:
     input:
         S3.remote(prefix + 'processed/GSE134836_list.rds'),
@@ -18,15 +28,12 @@ rule get_full_exp_list:
         S3.remote(prefix + 'processed/GSE149215_list.rds'),
         S3.remote(prefix + 'processed/GSE160244_list.rds')
     output:
-        S3.remote(prefix + 'scRNA_response.rds')
-    resources:
-        mem_mb = 15000,
-        disk_mb = 6000
+        S3.remote(prefix + 'processed/scRNA_response.rds')
     shell:
         """
         Rscript scripts/get_full_exp_list.R \
         {prefix}processed \
-        {prefix}
+        {prefix}processed
         """
 
 rule process_GSE160244:
