@@ -20,8 +20,8 @@ rule get_full_exp_list:
     output:
         S3.remote(prefix + 'scRNA_response.rds')
     resources:
-        mem_mb = 12000,
-        disk_mb = 3000
+        mem_mb = 15000,
+        disk_mb = 6000
     shell:
         """
         Rscript scripts/get_full_exp_list.R \
